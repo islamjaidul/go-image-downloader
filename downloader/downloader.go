@@ -13,9 +13,11 @@ import (
 	"github.com/gocolly/colly"
 )
 
+const imageDownloadDir = "./tmp"
+
 // DownloadImages downloads all images from the provided URL.
 func DownloadImages(url string) {
-	cleanTmpDirectory()
+	cleanTmpDirectory(imageDownloadDir)
 
 	var urlList []string
 	c := colly.NewCollector()
@@ -44,10 +46,10 @@ func DownloadImages(url string) {
 }
 
 // cleanTmpDirectory removes the tmp directory if it exists.
-func cleanTmpDirectory() {
-	if _, err := os.Stat("./tmp"); !os.IsNotExist(err) {
+func cleanTmpDirectory(directory string) {
+	if _, err := os.Stat(directory); !os.IsNotExist(err) {
 		// If the directory exists, remove it
-		err := os.RemoveAll("./tmp")
+		err := os.RemoveAll(directory)
 		if err != nil {
 			log.Println("Error removing tmp directory:", err)
 			return
@@ -76,8 +78,8 @@ func download(url string, fileName string) {
 	defer response.Body.Close()
 
 	// Ensure the tmp directory exists
-	if _, err := os.Stat("./tmp"); os.IsNotExist(err) {
-		err := os.Mkdir("./tmp", os.ModePerm)
+	if _, err := os.Stat(imageDownloadDir); os.IsNotExist(err) {
+		err := os.Mkdir(imageDownloadDir, os.ModePerm)
 		if err != nil {
 			log.Println("Error creating directory:", err)
 			return
@@ -85,7 +87,7 @@ func download(url string, fileName string) {
 	}
 
 	fileName = fmt.Sprintf("%s.jpg", fileName)
-	file, err := os.Create("./tmp/" + fileName)
+	file, err := os.Create(imageDownloadDir + "/" + fileName)
 	if err != nil {
 		log.Println("Error creating file:", err)
 		return
