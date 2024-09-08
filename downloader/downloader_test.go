@@ -6,9 +6,19 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+type MockDownloader struct {
+	mock.Mock
+}
+
+func (m *MockDownloader) Download(url string, fileName string) {
+	m.Called(url, fileName)
+}
+
 func Test_Downloader(t *testing.T) {
+
 	t.Run("cleanTmpDirectory: It should remove the given directory", func(t *testing.T) {
 		err := os.Mkdir("../tmp", os.ModePerm)
 		if err != nil {
@@ -34,5 +44,13 @@ func Test_Downloader(t *testing.T) {
 		for i, url := range filteredUrlList {
 			assert.Equal(t, urlList[i], url)
 		}
+	})
+
+	t.Run("download: mock this ", func(t *testing.T) {
+		mockDownloader := new(MockDownloader)
+		mockDownloader.On("Download", mock.Anything, mock.Anything).Times(4)
+		DownloadImages("https://www.rightmove.co.uk/", mockDownloader)
+
+		mockDownloader.AssertExpectations(t)
 	})
 }

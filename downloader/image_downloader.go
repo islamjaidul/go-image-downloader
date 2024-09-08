@@ -15,8 +15,9 @@ import (
 
 const imageDownloadDir = "./tmp"
 
-// DownloadImages downloads all images from the provided URL.
-func DownloadImages(url string) {
+type ImageDownloader struct{}
+
+func DownloadImages(url string, downloader IDownloader) {
 	cleanTmpDirectory(imageDownloadDir)
 
 	var urlList []string
@@ -35,7 +36,7 @@ func DownloadImages(url string) {
 			wg.Add(1)
 			go func(url string, i int) {
 				defer wg.Done()
-				download(url, "test"+strconv.Itoa(i))
+				downloader.Download(url, "test"+strconv.Itoa(i))
 			}(url, i)
 		}
 		wg.Wait()
@@ -45,7 +46,6 @@ func DownloadImages(url string) {
 	c.Visit(url)
 }
 
-// cleanTmpDirectory removes the tmp directory if it exists.
 func cleanTmpDirectory(directory string) {
 	if _, err := os.Stat(directory); !os.IsNotExist(err) {
 		// If the directory exists, remove it
@@ -57,7 +57,6 @@ func cleanTmpDirectory(directory string) {
 	}
 }
 
-// filterUrl filters the image URLs by extensions (jpg/jpeg).
 func filterUrl(urlList []string) []string {
 	var filteredUrlList []string
 	for _, url := range urlList {
@@ -68,8 +67,7 @@ func filterUrl(urlList []string) []string {
 	return filteredUrlList
 }
 
-// download downloads a single image from the provided URL.
-func download(url string, fileName string) {
+func (i *ImageDownloader) Download(url string, fileName string) {
 	response, err := http.Get(url)
 	if err != nil {
 		log.Println("Error downloading:", err)
