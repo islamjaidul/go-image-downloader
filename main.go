@@ -14,7 +14,7 @@ func main() {
 	var d downloader.IDownloader = &downloader.ImageDownloader{}
 
 	// Call the DownloadImages function from the downloader package
-	downloader.DownloadImages("https://www.rightmove.co.uk/", d)
+	downloader.DownloadImages("https://en.wikipedia.org/wiki/Bangladesh", d)
 
 	// Calculate and print the total download time
 	elapsedTime := time.Since(startTime)
