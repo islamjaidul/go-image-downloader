@@ -1,5 +1,5 @@
 package downloader
 
 type IDownloader interface {
-	Download(url string, fileName string)
+	download(url string, fileName string)
 }

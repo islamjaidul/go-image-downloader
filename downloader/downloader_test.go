@@ -13,7 +13,7 @@ type MockDownloader struct {
 	mock.Mock
 }
 
-func (m *MockDownloader) Download(url string, fileName string) {
+func (m *MockDownloader) download(url string, fileName string) {
 	m.Called(url, fileName)
 }
 

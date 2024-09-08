@@ -36,7 +36,7 @@ func DownloadImages(url string, downloader IDownloader) {
 			wg.Add(1)
 			go func(url string, i int) {
 				defer wg.Done()
-				downloader.Download(url, "test"+strconv.Itoa(i))
+				downloader.download(url, "test"+strconv.Itoa(i))
 			}(url, i)
 		}
 		wg.Wait()
@@ -67,7 +67,7 @@ func filterUrl(urlList []string) []string {
 	return filteredUrlList
 }
 
-func (i *ImageDownloader) Download(url string, fileName string) {
+func (i *ImageDownloader) download(url string, fileName string) {
 	response, err := http.Get(url)
 	if err != nil {
 		log.Println("Error downloading:", err)
